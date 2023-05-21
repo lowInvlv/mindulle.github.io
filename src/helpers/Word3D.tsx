@@ -1,6 +1,5 @@
-import React, { useState, useRef } from 'react'
-import { Html, Text3D } from '@react-three/drei'
-import { ThreeElements } from '@react-three/fiber'
+import { useState } from 'react'
+import { Text3D } from '@react-three/drei'
 
 export default function Word3D(props: any) {
   const [hovered, hover] = useState(false)
