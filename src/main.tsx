@@ -1,32 +1,29 @@
-import * as THREE from 'three'
 import ReactDOM from 'react-dom/client'
-import { useRef, useState } from 'react'
-import { Canvas, useFrame, ThreeElements } from '@react-three/fiber'
-
-function Box(props: ThreeElements['mesh']) {
-  const ref = useRef<THREE.Mesh>(null!)
-  const [hovered, hover] = useState(false)
-  const [clicked, click] = useState(false)
-  useFrame((_, delta) => (ref.current.rotation.x += delta))
-  return (
-    <mesh
-      {...props}
-      ref={ref}
-      scale={clicked ? 1.5 : 1}
-      onClick={() => click(!clicked)}
-      onPointerOver={() => hover(true)}
-      onPointerOut={() => hover(false)}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
-    </mesh>
-  )
-}
+import { Canvas, useThree } from '@react-three/fiber'
+import { Center, OrbitControls } from '@react-three/drei'
+import Word3D from './helpers/Word3D'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <Canvas>
+  <Canvas orthographic camera={{ position: [0, 0, 100], zoom: 25 }}>
     <ambientLight />
     <pointLight position={[10, 10, 10]} />
-    <Box position={[-1.2, 0, 0]} />
-    <Box position={[1.2, 0, 0]} />
-  </Canvas>,
+    <Scene />
+    <OrbitControls enableZoom={true} enablePan={false} minPolarAngle={Math.PI / 2} maxPolarAngle={Math.PI / 2} />
+  </Canvas >,
 )
+
+
+function Scene({ margin = 0.5 }) {
+  const { width, height } = useThree((state) => state.viewport)
+  return (
+    <>
+      <Center bottom right position={[-width / 2 + margin, height / 2 - margin, 0]}>
+        <Word3D label="CLI" url="https://github.com/mindulle/learn" position={[0, 0, 0]} />
+        <Word3D label="Gym" url="https://github.com/mindulle/Gym" position={[width / -4, height / -3, 0]} />
+        <Word3D label="UI" url="https://github.com/mindulle/playground" position={[width / -4, height / 3, 0]} />
+        <Word3D label="Garden" url="https://mindulle.github.io/garden" position={[width / 4, height / 3, 0]} />
+        <Word3D label="Bookshelf" url="https://mindulle.github.io/bookshelf" position={[width / 4, height / -3, 0]} />
+      </Center>
+    </>
+  )
+}
